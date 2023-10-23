@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
 
 
 def askInfoGame():
@@ -58,8 +57,6 @@ def askInfoGame():
         return None
 
 
-# In[2]:
-
 
 import random
 
@@ -88,9 +85,6 @@ def randomFill(min, max, useSeed = 0):
     
     # Returns the random integer generated between the interval [min,max]
     return random.randint(min,max+1) # +1 to ensure that max is included in the interval
-
-
-# In[4]:
 
 
 def initializePlayers(number):
@@ -133,68 +127,247 @@ def initializePlayers(number):
         
     # Returns the list with all the players information
     return playerList
+
+def showInfoRound(nrRounds):
+    """
+    Prints a line in the standard output informing the number of
+    the current round.
+
+    Parameters
+    ----------
+    nrR : integer
+        The number of the current round.
+
+    Returns
+    -------
+    None.
+
+    """
+    print(f'Round {nrRounds}:')
         
+def showInfoBottle(liquid, maxLiquid, deltaDown, deltaUp):
+    """
+    Prints several lines in the standard output informing about the
+    current state of the game:
+        - The first line informs about the interval of percentages within which 
+          lies the current bottle content percentage. This interval depends on
+          the values of deltaDown and deltaUp.
+        - The next 11 lines give a somewhat visual representation of that
+          interval of percentages (each line accounts for 10% ; the last one
+          represents the bottom of the bottle).
+
+    The minimum value of the left side of the interval is 0
+    The maximum value of the right side of the interval is 100
+
+    Parameters
+    ----------
+    liquid : integer
+        The current content of the bottle.
+    maxLiquid : integer
+        The capacity of the bottle.
+    deltaDown : float
+        A value that allows calculating the left endpoint of the interval.
+    deltaUp : float
+        A value that allows calculating the right endpoint of the interval.
+
+    Returns
+    -------
+    None.
+
+    """
+    liquid_percentage = (liquid / maxL) * 100
+    bottle_length = 10
+    fill_length = int(bottle_length * (liquid_percentage / 100))
+    
+    print(" | |")
+    for i in range(bottle_length, 0, -1):
+        if i == fill_length:
+            print("|@@@|")
+        else:
+            print("|   |")
+
+####################################
+"Done until here"
+####################################
+def notLostYet(players, nr):
+    """
+    Is it the case that the player number nr hasn't yet lost the game?
+
+    Parameters
+    ----------
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+    nr : integer
+        A number that allows to identify which player we are referring to.
+
+    Returns
+    -------
+    boolean
+        True if the player with number nr has not yet lost the game. 
+        False otherwise.
+
+    """
+    return players[nr]['playingStatus']
+
+# *****************************************************
+def askForQuantity(players, nr):
+    """
+    Asks the user for the value of the quantity that the player number nr 
+    wants to add to the bottle
+
+    Parameters
+    ----------
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+    nr : integer
+        A number that allows to identify which player we are referring to.
+
+    Returns
+    -------
+    integer
+        The quantity that the player number nr wants to add to the bottle.
+
+    """
+    while True:
+        try:
+            qty = int(input(f"{players[nr]['name']}, enter the quantity you want to add to the bottle: "))
+            return qty
+        except ValueError:
+            print("Invalid input. Please enter an integer.")
+
+# *****************************************************
+def updatePlayerScores(players, nr, qty):
+    """
+    Updates the accumulated score of player number nr by adding it the value
+    of qty
+
+    Parameters
+    ----------
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+    nr : integer
+        A number that allows to identify which player we are referring to.
+    qty : integer
+        The quantity that the player number nr decided to add to the bottle.
+
+    Returns
+    -------
+    None.
+
+    """
+    players[nr]['score'] += qty
+
+# *****************************************************
+def updatePlayerLost(players, nr):
+    """
+    Updates the status of the player number nr to a loser one
+
+    Parameters
+    ----------
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+    nr : integer
+        A number that allows to identify which player we are referring to.
+
+    Returns
+    -------
+    None.
+
+    """
+    players[nr]['playingStatus'] = False
+
+# *****************************************************
+def allLost(players):
+    """
+    Is it the case that all the players have already lost the game?
+
+    Parameters
+    ----------
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+
+    Returns
+    -------
+    result : boolean
+        True if all players have already lost. False otherwise.
+
+    """
+    return all(not player['playingStatus'] for player in players)
+
+# *****************************************************
+def showInfoResult(bottle, maxL, players, nr, nrRounds):
+    """
+    Shows the information about the outcome of the game (see the examples 
+    given in the text of the project)
+
+    Parameters
+    ----------
+    bottle : integer
+        The current content of the bottle.
+    maxL : integer
+        The capacity of the bottle.
+    players : A data structure (your decision)
+        A data structure containing the information about players.
+    nr : integer
+        A number that allows to identify which player has won, if any.
+    nrRounds : integer
+        The number of rounds played in the game.
+
+    Returns
+    -------
+    None.
+
+    """
+    if bottle == maxL:
+        winner = [player for player in players if player['score'] == maxL]
+        if winner:
+            print("Game Over!")
+            print(f"{winner[0]['name']} has filled the bottle to its capacity and wins the game with {maxL} points!")
+            print(f"Total rounds played: {nrRounds}")
+        else:
+            print("Game Over! No player filled the bottle, and it's a tie.")
+    else:
+        print("Game Over! All players have lost.")
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[5]:
-
+# Actual Game snipnet
 
 winBonus = 50         # The bonus to be given to the winner, if any
 deltaLeft = 0.2       # Used to inform the user about the state of the bottle
 deltaRight = 0.23     # Used to inform the user about the state of the bottle
 
-minLiquid, maxLiquid, nrPlayers = askInfoGame()
+minLiquid, maxL, nrPlayers = askInfoGame()
 
-liquidInBottle = randomFill(minLiquid, maxLiquid, useSeed = 1)
+liquidInBottle = randomFill(minLiquid, maxL, useSeed = 1)
 
 players = initializePlayers(nrPlayers)
 print(players)
 
+# It can be the case that the bottle is initially full
+endGame = liquidInBottle == maxL  
 
-# In[ ]:
+nrRounds = 0
+showInfoBottle(liquidInBottle, maxL, deltaLeft, deltaRight)
 
+# Let's play the game
+while not endGame:
+    nrRounds += 1
+    showInfoRound(nrRounds)
+    # Let's play the next round
+    nr = -1
+    while nr < nrPlayers - 1 and not endGame:
+        nr += 1
+        # Only players that have not yet lost are allowed to play their turn
+        if notLostYet(players, nr):
+            qty = askForQuantity(players, nr)
+            updatePlayerScores(players, nr, qty) 
+            if qty + liquidInBottle > maxL:
+                updatePlayerLost(players, nr)
+                print(f"Oops! {players[nr]['name']}, you tried to overfill the bottle! The game is over for you!\n")
+            else: 
+                liquidInBottle += qty
+                showInfoBottle(liquidInBottle, maxL, deltaLeft, deltaRight)
+            # Should the game end after this turn?
+            endGame = liquidInBottle == maxL or allLost(players)
 
-
-
-
-# In[ ]:
-
-
-
-
+showInfoResult(liquidInBottle, maxL, players, nr, nrRounds)
