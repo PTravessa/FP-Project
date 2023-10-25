@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+#env python3
+#coding: utf-8
 """
-FUNDAMENTOS DE PROGRAMAÇÃO - PROJETO 1
+FUNDAMENTOS DE PROGRAMAÇÃO - GRUPO 11
 
-@author: Duarte Gonçalves (nº 56095) e Pedro Travessa (nº 59479)
+@author's: Duarte Gonçalves (nº 56095) e Pedro Travessa (nº 59479)
 """
 import random
 from random import seed
@@ -12,17 +12,19 @@ from random import randint
 # *****************************************************
 def askInfoGame():
     """
-    Asks the user for three values that are important for the game
+    Asks the user for three values that are important for the game:
+    The minimum and maximum quantities of liquid the bottle can have, and the number of players.
 
-    Returns
-    -------
-    minL : integer
-        The minimum quantity of liquid the bottle must have.
-    maxL : integer
-        The maximum quantity of liquid the bottle can have (capacity).
-    nrPlayers : integer
-        The number of players playing the game.
+    Returns:
+    A tuple containing three integers: the minimum quantity of liquid the 
+    bottle must have (minL); the maximum quantity of liquid the bottle can 
+    have (maxL) and the number of players playing the game (nrPlayers). 
+    If any input is invalid (not an integer), a message is printed and None is returned.
 
+    Raises a ValueError:
+    If any of the inputs are not integers, a ValueError occurs, which leads 
+    to the execution of a block that prints a statement indicating invalid input.
+        
     """
 # The try and except blocks allow the detection of invalid inputs, i.e. not integers
     try:     
@@ -60,22 +62,15 @@ def askInfoGame():
 # *****************************************************
 def randomFill(min, max, useSeed = 0):
     """
-    Generates and returns a random integer, in the interval [min,max].
-    
-    Parameters
-    ----------
-    min : integer
-        The minimum value of the random value to be generated.
-    max : integer
-        The minimum value of the random value to be generated.
-    useSeed : integer, optional
-        The seed for the random generator. The default is 0.
+    Generates and returns a random integer within a specified interval.
 
-    Returns
-    -------
-    integer
-        A random integer, in the interval [min,max].
+    Parameters:
+    "min" represents the minimum value of the random integer to be generated.
+    "max" represents the maximum value of the random integer to be generated.
+    "useSeed" represents the seed for the random generator. The default is 0.
 
+    Returns:
+    A random integer within the interval [min, max].
     """
     # Sets the seed to ensure reproducible results
     random.seed(useSeed)
@@ -86,23 +81,18 @@ def randomFill(min, max, useSeed = 0):
 # *****************************************************
 def initializePlayers(number):
     """
-    Creates and returns a list of dictionaries, where each dictionary
-    corresponds to a different player. Each player has a name, a
-    current number of score points (equal to the sum of the quantities
-    he has already chosen), and whether they are
-    still playing or have already lost.
+    Creates and returns a list of players for the game.
+    Each player is represented by a dictionary containing their name, score, and playing status.
 
-    Parameters
-    ----------
-    number : integer
-        The number of players that are going to play.
+    Parameters:
+    "number" represetns the number of players that are going to play.
 
-    Returns
-    -------
-    list
-        A list that represents the game players at the
-        beginning of the game.
-
+    Returns:
+    A list of dictionaries, each representing a player.
+    Each dictionary contains 'name', 'score', and 'playingStatus' keys.
+    The 'name' value is obtained from user input, the 'score' value is initialized as 0, and 
+    the 'playingStatus' value is initialized to True.
+        
     """
     # Creates an empty list to which the information regarding the players will be added
     playerList=[]
@@ -141,58 +131,42 @@ def initializePlayers(number):
 # *****************************************************
 def showInfoRound(nrR):
     """
-    Prints a line in the standard output informing the number of
-    the current round.
+    Prints information about the current round number.
 
-    Parameters
-    ----------
-    nrR : integer
-        The number of the current round.
+    Parameters:
+    "nrR" represents the number of the current round.
 
-    Returns
-    -------
-    None.
-
+    Output:
+    Text informing about the current round number.   
     """
     print(f"========== ROUND NUMBER {nrR} ==========")
 
     
 # *****************************************************
-def showInfoBottle(liquid, maxLiquid, deltaDown, deltaUp):
+def showInfoBottle(liquid, maxL, deltaLeft, deltaRight):
     """
-    Prints several lines in the standard output informing about the
-    current state of the game:
-        - The first line informs about the interval of percentages within which 
-          lies the current bottle content percentage. This interval depends on
-          the values of deltaDown and deltaUp.
-        - The next 11 lines give a somewhat visual representation of that
-          interval of percentages (each line accounts for 10% ; the last one
-          represents the bottom of the bottle).
-    The minimum value of the left side of the interval is 0
-    The maximum value of the right side of the interval is 100
+        Prints information about the current state of the game, including an interval 
+        of percentages within which lies the current bottle content percentage and a 
+        visual representation of that interval.
 
-    Parameters
-    ----------
-    liquid : integer
-        The current content of the bottle.
-    maxLiquid : integer
-        The capacity of the bottle.
-    deltaDown : float
-        A value that allows to calculate the left endpoint of the interval.
-    deltaUp : float
-        A value that allows to calculate the right endpoint of the interval.
+        Parameters:
+        "liquid" represents the current content of the bottle.
+        "maxL" represents the capacity of the bottle.
+        "deltaLeft" is a value used to calculate the left endpoint of the interval.
+        "deltaRight" likewise deltaLeft it's the value used to calculate the right endpoint of the interval.
 
-    Returns
-    -------
-    None.
-
-    """
+        Output:
+        It prints the current state of the game.
+        The first line informs about the interval of percentages which lies on the current bottle 
+        filling percentage. The next 11 lines gives a visual representation of that interval
+        (each line accounts for 10%; the last one represents the bottom of the bottle).
+        """
     # Calculates the current liquid percentage of the bottle
-    liquid_percentage = (liquid / maxLiquid) * 100
+    liquid_percentage = (liquid / maxL) * 100
 
     # Calculates the bounds taking into account the delta values
     lowerBound = liquid_percentage*(1-deltaLeft)
-    upperBound = liquid_percentage*(1+deltaDown)
+    upperBound = liquid_percentage*(1+deltaRight)
     
     # Checks if the bounds belong to the interval [0,100]. If they do not, they are altered to ensure they do
     if lowerBound <0:
@@ -218,42 +192,29 @@ def showInfoBottle(liquid, maxLiquid, deltaDown, deltaUp):
 # *****************************************************
 def notLostYet(players, nr):
     """
-    Checks if the player number nr is still playing or has lost the game.
+        Checks if all players have lost the game.
 
-    Parameters
-    ----------
-    players : list
-        A list containing the information about players.
-    nr : integer
-        A number that allows to identify which player we are referring to.
+        Parameters:
+        "players" represents a list of dictionaries, each containing information about a player.
+        "nr" represents an index that identifies the player in the players list.
 
-    Returns
-    -------
-    boolean
-        True if the player with number nr has not yet lost the game. 
-        False otherwise.
-
+        Returns:
+        A boolean value, False if the players have lost and True otherwise.
     """
     return players[nr]['playingStatus']
 
 # *****************************************************
 def askForQuantity(players, nr):
     """
-    Asks the user for the value of the quantity that the player number nr 
-    wants to add to the bottle
+    Asks a player for the quantity they want to add to the bottle.
 
-    Parameters
-    ----------
-    players : list
-        A list containing the information about players.
-    nr : integer
-        A number that allows to identify which player we are referring to.
+    Parameters:
+    "players" represents a list of dictionaries, each containing information about a player.
+    "nr" represents an index that identifies the player in the players list.
 
-    Returns
-    -------
-    integer
-        The the quantity that the player number nr wants to add to the bottle.
-
+    Asks:
+    The quantity that the player wants to add to the bottle. This is obtained 
+    from user input and must be an integer.
     """
     # The while loop ensures the game will only continue if the user input is valid
     while True:
@@ -273,22 +234,14 @@ def askForQuantity(players, nr):
 # *****************************************************
 def updatePlayerScores(players, nr, qty):
     """
-    Updates the accumulated score of player number nr by adding it the value
-    of qty
+    Updates the accumulated score of a player by adding a specified quantity.
 
-    Parameters
-    ----------
-    players : list
-        A list containing the information about players.
-    nr : integer
-        A number that allows to identify which player we are referring to.
-    qty : integer
-        The quantity that the player number nr decided to add to the bottle.
+    Parameters:
+    "players" represents a list of dictionaries, each containing information about a player. 
+    "nr" represents an index that identifies the player in the players list.
+    "qty" represents the quantity to be added to the player's score.
 
-    Returns
-    -------
-    None.
-
+    The 'score' value of the player's dictionary in the "players" list is increased by qty.
     """
     players[nr]['score'] += qty
 
@@ -296,37 +249,27 @@ def updatePlayerScores(players, nr, qty):
 # *****************************************************
 def updatePlayerLost(players, nr):
     """
-    Updates the status of the player number nr to lost
+    Updates the status of a player to lost.
 
-    Parameters
-    ----------
-    players : list
-        A list containing the information about players.
-    nr : integer
-        A number that allows to identify which player we are referring to.
+    Parameters:
+    "players" represents a list of dictionaries, each containing information about a player. 
+    "nr" represents an index that identifies the player in the players list.
 
-    Returns
-    -------
-    None.
-
+    The 'playingStatus' value of the player's dictionary in the players list 
+    is set to False, indicating that the player has lost.
     """
     players[nr]['playingStatus'] = False
     
 # *****************************************************
 def allLost(players):
     """
-    Is it the case that all the players have already lost the game?
+        Checks if all players have lost the game.
 
-    Parameters
-    ----------
-    players : list
-        A list containing the information about players.
+        Parameters:
+        "players" represents a list of dictionaries, each containing information about a player. 
 
-    Returns
-    -------
-    result : boolean
-        True is all players have already lost. False otherwise.
-
+        Returns:
+        A boolean value, True if all players have lost and False otherwise.
     """
     # Creates a cycle thats checks every players playing status
     for player in players:
@@ -337,64 +280,63 @@ def allLost(players):
     return True
 
 # *****************************************************
-def showInfoResult(bottle,maxL,players,nr,nrRounds):
+def showInfoResult(bottle, maxL, players, nrRounds):
     """
-    Shows the information about the outcome of the game
+        Shows the information about the outcome of the game.
 
-    Parameters
-    ----------
-    bottle : integer
-        The current content of the bottle.
-    maxL : integer
-        The capacity of the bottle.
-    players : list
-        A list containing the information about players.
-    nr : integer
-        A number that allows to identify which player has won, if any.
-    nrRounds : integer
-        The number of rounds played in the game.
+        Parameters:
+        "bottle" represents the current content of the bottle.
+        "maxL" represents the capacity of the bottle.
+        "players" represents a list containing dictionaries with information about each player. 
+        "nrRounds" represents the number of rounds played in the game.
 
-    Returns
-    -------
-    None.
-
+        Output:
+        Prints the game's outcome, including whether it's a tie, who the winners are, 
+        and the final scores and bonuses for all players. If a player has lost, 
+        their score is displayed as 'Lost'. Otherwise, their score and a bonus 
+        of 50 points are displayed.
     """
     print("********** GAME OVER **********")
-    if bottle == maxL:
-        # Creates a list for the winners
-        winnerList = [player['name'] for player in players if player['playingStatus'] == True]
-
-        # In case there is one winner
-        if len(winnerList)==1:
-            print("The bottle is finally full. Game over!!")
-            print(f"{winnerList[0]} won the game in {nrRounds} plays")
-
-
-        # In case there is more than one winner (tie)
-        elif len(winnerList)>1:
-            print("It's a tie. The winners are:")
-
+    
+    # Create a list of players who haven't lost
+    active_players = [player for player in players if player['playingStatus']]
+    
+    if bottle == maxL and active_players:
+        # Sort the active players by their score in descending order
+        active_players.sort(key=lambda player: player['score'], reverse=True)
+        top_score = active_players[0]['score']
+        
+        # Find the winners with the highest score
+        winners = [player['name'] for player in active_players if player['score'] == top_score]
+        
+        if len(winners) == 1:
+            print(f"The bottle is finally full. Game over!!")
+            if nrRounds ==1:
+                print(f"{winners[0]} won the game in {nrRounds} round and gets a bonus of 50 points.")
+            if nrRounds >1:
+                print(f"{winners[0]} won the game in {nrRounds} rounds and gets a bonus of 50 points.")
         else:
-            print("All players lost! The game is over")
-
-
-    # In case the initial condition is not met
+            print("It's a tie!")
+            print(f"The Winners have the same score of {top_score}. Receiving the bonus of 50 points each.")
+            print("The Winners are:")
+            for winner in winners:
+                print(winner)
+            
+        
     else:
         print("All players lost! The game is over")
-
-    # Prints the table format
+    
+    # Print the table format
     print(" ")
     print("FINAL SCORES:")
-    print("{:<20} {:>20} {:>20}".format('NAME', 'SCORE', 'BONUS'))
-
-   # Determines the game scores that will be displayed in the table
+    print("{:<25} {:>20} {:>20}".format('NAME', 'SCORE', 'BONUS'))
+    
+    # Print the players' scores and bonuses for players who haven't lost
     for player in players:
-        if player['playingStatus'] == False: # If the player has lost, they will not have a score nor bonus points
-          print("{:<20} {:>20}".format(player['name'], 'Lost'))
-
-        else: # If the player has not lost, they will have a score and bonus
-          print("{:<20} {:>20} {:>20}".format(player['name'], player['score'], '50'))
-
+        if player['playingStatus'] is False:
+            print("{:<25} {:>20}".format(player['name'], 'Lost'))
+        else:
+            print("{:<25} {:>20} {:>20}".format(player['name'], player['score'], '50'))
 
 
 #######################################################
@@ -402,18 +344,18 @@ def showInfoResult(bottle,maxL,players,nr,nrRounds):
 #######################################################
 winBonus = 50         # The bonus to be given to the winner, if any
 deltaLeft = 0.2       # Used to inform the user about the state of the bottle
-deltaRight = 0.23     # Used to inform the user about the state of the bottle
+deltaRight = 0.23005     # Used to inform the user about the state of the bottle
 
-minLiquid, maxLiquid, nrPlayers = askInfoGame()
+minL, maxL, nrPlayers = askInfoGame()
 
-liquidInBottle = randomFill(minLiquid, maxLiquid, useSeed = 1)
+liquid = randomFill(minL, maxL, useSeed = 1)
 players = initializePlayers(nrPlayers)
 
 # It can be the case that the bottle is iniatilly full
-endGame = liquidInBottle == maxLiquid  
+endGame = liquid == maxL  
 
 nrRounds = 0
-showInfoBottle(liquidInBottle, maxLiquid, deltaLeft, deltaRight)
+showInfoBottle(liquid, maxL, deltaLeft, deltaRight)
 
 # Let's play the game
 while not endGame:
@@ -427,20 +369,14 @@ while not endGame:
         if notLostYet(players, nr):
            qty = askForQuantity(players, nr)
            updatePlayerScores(players, nr, qty) 
-           if qty + liquidInBottle > maxLiquid:
+           if qty + liquid > maxL:
               updatePlayerLost(players, nr)
               print("Oops! You tried to overfill the bottle! The game is over for you!\n")
            else: 
-              liquidInBottle += qty
-              showInfoBottle(liquidInBottle, maxLiquid, deltaLeft, deltaRight)
+              liquid += qty
+              showInfoBottle(liquid, maxL, deltaLeft, deltaRight)
            # Should the game end after this turn?
-           endGame = liquidInBottle == maxLiquid or allLost(players)
+           endGame = liquid == maxL or allLost(players)
 
-showInfoResult(liquidInBottle,maxLiquid,players,nr,nrRounds)
-
-
-
-
-
-
+showInfoResult(liquid,maxL,players,nrRounds)
 
