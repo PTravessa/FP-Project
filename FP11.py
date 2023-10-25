@@ -103,16 +103,26 @@ def initializePlayers(number):
     # Employs a for cycle which will create a dictionary for each player with their information, i.e name, score and playing status
     for i in range(1, number+1): # The number of the players starts with 1 - number (+1 so number is included)
 
-        # Checks if the name is different from all previous player names
+        """    # Checks if the name is different from all previous player names
         while True:
             
             # Prompts the user to enter the name of player number i
             name = input("Name of player " + str(i) + "? ")
             if name not in nameList:
                 nameList.append(name) # If the name is not in the list, add it to the list
-                break
+                break #Prof doesn't like the use of break fucntions
             else:
                 print("\nThat name is taken. Please insert a different name.") # If the name is on the list, prints error message
+        """            
+        name = None
+        while name is None or name in nameList:
+            # Ask's user to enter a player name
+            name = input("Name of player " + str(i) + "? ")
+            if name in nameList:
+                print("\nThat name is taken. Please insert a different name.")
+
+        nameList.append(name)  # Add the name to the list to ensure it's not used again
+
         
         # Creating the dictionaries with the information of each player to add to the list
         player = {
