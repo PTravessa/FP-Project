@@ -346,7 +346,7 @@ def showInfoResult(bottle, maxL, players, nrRounds):
         if player['playingStatus'] is False:
             print("{:<25} {:>20}".format(player['name'], 'Lost'))
         else:
-            print("{:<25} {:>20} {:>20}".format(player['name'], player['score'], '50' if player in winners else '0'))
+            print("{:<25} {:>20} {:>20}".format(player['name'], player['score'], (winBonus) if player in winners else '0'))
 
 
 #######################################################
