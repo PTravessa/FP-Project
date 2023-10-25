@@ -317,20 +317,20 @@ def showInfoResult(bottle, maxL, players, nrRounds):
         top_score = active_players[0]['score']
         
         # Find the winners with the highest score
-        winners = [player['name'] for player in active_players if player['score'] == top_score]
+        winners = [player for player in active_players if player['score'] == top_score]
         
         if len(winners) == 1:
             print(f"The bottle is finally full. Game over!!")
             if nrRounds ==1:
-                print(f"{winners[0]} won the game in {nrRounds} round and gets a bonus of 50 points.")
+                print(f"{winners[0]['name']} won the game in {nrRounds} round and gets a bonus of 50 points.")
             if nrRounds >1:
-                print(f"{winners[0]} won the game in {nrRounds} rounds and gets a bonus of 50 points.")
+                print(f"{winners[0]['name']} won the game in {nrRounds} rounds and gets a bonus of 50 points.")
         else:
             print("It's a tie!")
             print(f"The Winners have the same score of {top_score}. Receiving the bonus of 50 points each.")
             print("The Winners are:")
             for winner in winners:
-                print(winner)
+                print(winner['name'])
             
         
     else:
@@ -346,7 +346,7 @@ def showInfoResult(bottle, maxL, players, nrRounds):
         if player['playingStatus'] is False:
             print("{:<25} {:>20}".format(player['name'], 'Lost'))
         else:
-            print("{:<25} {:>20} {:>20}".format(player['name'], player['score'], '50'))
+            print("{:<25} {:>20} {:>20}".format(player['name'], player['score'], '50' if player in winners else '0'))
 
 
 #######################################################
