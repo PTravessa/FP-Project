@@ -328,7 +328,7 @@ def showInfoResult(bottle, maxL, players, nrRounds):
     print("FINAL SCORES:")
     print("{:<25} {:>20} {:>20}".format('NAME', 'SCORE', 'BONUS'))
     
-    # Print the players' names, scores (and bonuses for players who haven't lost)
+    # Print the players names, scores (and bonuses for players who haven't lost)
     for player in players:
         if player['playingStatus'] is False:
             print("{:<25} {:>20}".format(player['name'], 'Lost'))
