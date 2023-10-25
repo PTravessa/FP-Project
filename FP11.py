@@ -26,35 +26,33 @@ def askInfoGame():
     to the execution of a block that prints a statement indicating invalid input.
         
     """
-# The try and except blocks allow the detection of invalid inputs, i.e. not integers
+# Try and except blocks allow the detection of invalid inputs, i.e. not integers
     try:     
-        # Prompts user to enter value to be assigned to the minL variable
+        # Prompt user to enter values to be assigned to the minL and maxL variables, respectively
         minL = int(input("Minimum volume of bottle?  "))
-
-        # Prompts user to enter value to be assigned to the maxL variable
         maxL = int(input("Maximum volume of bottle?  "))
         
-        # Checks if the minL is equal or bigger than zero, and if maxL is bigger than minL
+        # Check if the minL is equal or bigger than zero, and if maxL is bigger than minL
         if minL < 0 or maxL <= minL:
             print("\nPlease make sure that the minimum quantity of liquid is >=0 and that the maximum quantity is higher than the lower quantity of liquid.")
             return None
         
         else:
-            # Prompts user to enter value to be assigned to the nrPlayers variable
+            # Prompt user to enter value to be assigned to the nrPlayers variable
             nrPlayers = int(input("How many players? "))
         
-            # Checks if the the number of players is > 0
+            # Check if the the number of players is > 0
             if nrPlayers <=0:
-                print("\nThe number of players has to be higher than 0.")
+                print("\nThe number of players has to be higher than 0.\n")
                 return None
         
-            # Returns a tuple with the values of the variables
+            # Return a tuple with the values of the variables
             return minL, maxL, nrPlayers
 
 # If any of the inputs are not integers, there occurs a ValueError error, which leads to the execution of this block
     except ValueError:
         
-        # Prints a statement that indicates invalid input, i.e. not integers
+        # Print a statement that indicates invalid input, i.e. not integers
         print("\nYour input was not valid. Please try again, and insert integers only.")
         return None
 
@@ -72,10 +70,10 @@ def randomFill(min, max, useSeed = 0):
     Returns:
     A random integer within the interval [min, max].
     """
-    # Sets the seed to ensure reproducible results
+    # Set the seed to ensure reproducible results
     random.seed(useSeed)
     
-    # Returns the random integer generated between the interval [min,max]
+    # Return the random integer generated between the interval [min,max]
     return random.randint(min,max+1) # +1 to ensure that max is included in the interval
 
 # *****************************************************
@@ -94,29 +92,18 @@ def initializePlayers(number):
     the 'playingStatus' value is initialized to True.
         
     """
-    # Creates an empty list to which the information regarding the players will be added
+    # Create a list to which the information regarding the players will be added
     playerList=[]
 
-    # Creates a list for the player names to ensure different usernames
+    # Create a list for the player names to ensure different usernames
     nameList =[]
     
-    # Employs a for cycle which will create a dictionary for each player with their information, i.e name, score and playing status
+    # For cycle which will create a dictionary for each player with their information, i.e name, score and playing status
     for i in range(1, number+1): # The number of the players starts with 1 - number (+1 so number is included)
-
-        """    # Checks if the name is different from all previous player names
-        while True:
-            
-            # Prompts the user to enter the name of player number i
-            name = input("Name of player " + str(i) + "? ")
-            if name not in nameList:
-                nameList.append(name) # If the name is not in the list, add it to the list
-                break #Prof doesn't like the use of break fucntions
-            else:
-                print("\nThat name is taken. Please insert a different name.") # If the name is on the list, prints error message
-        """            
+           
         name = None
         while name is None or name in nameList:
-            # Ask's user to enter a player name
+            # Prompt user to enter a player name
             name = input("Name of player " + str(i) + "? ")
             if name in nameList:
                 print("\nThat name is taken. Please insert a different name.")
@@ -124,17 +111,17 @@ def initializePlayers(number):
         nameList.append(name)  # Add the name to the list to ensure it's not used again
 
         
-        # Creating the dictionaries with the information of each player to add to the list
+        # Create the dictionaries with the information of each player to add to the list
         player = {
             'name': name,
             'score': 0, # Every player starts with 0 points
             'playingStatus': True # Every player is playing in the beginning of the game
         }
         
-        # Adds the dictionaries with the information of the players to the list
+        # Add the dictionaries with the information of the players to the list
         playerList.append(player)
         
-    # Returns the list with all the players information
+    # Return the list with all the players information
     return playerList
 
 
@@ -171,26 +158,26 @@ def showInfoBottle(liquid, maxL, deltaLeft, deltaRight):
         filling percentage. The next 11 lines gives a visual representation of that interval
         (each line accounts for 10%; the last one represents the bottom of the bottle).
         """
-    # Calculates the current liquid percentage of the bottle
+    # Calculate current liquid percentage of the bottle
     liquid_percentage = (liquid / maxL) * 100
 
-    # Calculates the bounds taking into account the delta values
+    # Calculate the bounds taking into account the delta values
     lowerBound = liquid_percentage*(1-deltaLeft)
     upperBound = liquid_percentage*(1+deltaRight)
     
-    # Checks if the bounds belong to the interval [0,100]. If they do not, they are altered to ensure they do
+    # Check if bounds belong to the interval [0,100]. If they do not, they are altered to ensure they do
     if lowerBound <0:
         lowerBound=0
     if upperBound >100:
         upperBound=100
     
-    # Prints the interval of percentages within which the bottle content percentage lies, with two decimal places
+    # Print the interval of percentages within which the bottle content percentage lies, with two decimal places
     print("The bottle is between {:.2f}% and {:.2f}% full".format(lowerBound, upperBound))
 
-    # Defines the size of the bottle, i.e. number of partitions
+    # Define the size of the bottle, i.e. number of partitions
     bottle_length = 10
 
-    # Prints the visual representation of the bottle content
+    # Print the visual representation of the bottle content
     for i in range(bottle_length, 0, -1):
         if lowerBound//10 < i <=upperBound//10:
             print("|@@|")
@@ -226,13 +213,13 @@ def askForQuantity(players, nr):
     The quantity that the player wants to add to the bottle. This is obtained 
     from user input and must be an integer.
     """
-    # The while loop ensures the game will only continue if the user input is valid
+    # While loop ensure the game will only continue if the user input is valid
     while True:
 
-        # The try and except blocks are used to ensure valid input, i.e. integers
+        # Try and except blocks are used to ensure valid input, i.e. integers
         try:
 
-            # Prompts user to enter quantity to be added to the bottle and returning that value
+            # Prompt user to enter quantity to be added to the bottle and returns that value
             qty = int(input(f"Player {players[nr]['name']}: how much liquid? "))
             return qty
         
@@ -281,7 +268,7 @@ def allLost(players):
         Returns:
         A boolean value, True if all players have lost and False otherwise.
     """
-    # Creates a cycle thats checks every players playing status
+    # Create a cycle thats checks every players playing status
     for player in players:
        if player['playingStatus']: # If any player still has not lost, the game continues
            return False
@@ -341,7 +328,7 @@ def showInfoResult(bottle, maxL, players, nrRounds):
     print("FINAL SCORES:")
     print("{:<25} {:>20} {:>20}".format('NAME', 'SCORE', 'BONUS'))
     
-    # Print the players' scores and bonuses for players who haven't lost
+    # Print the players' names, scores (and bonuses for players who haven't lost)
     for player in players:
         if player['playingStatus'] is False:
             print("{:<25} {:>20}".format(player['name'], 'Lost'))
