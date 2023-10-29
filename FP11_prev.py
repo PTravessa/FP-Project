@@ -150,7 +150,7 @@ def showInfoBottle(liquid, maxL, deltaLeft, deltaRight):
         "liquid" represents the current content of the bottle.
         "maxL" represents the capacity of the bottle.
         "deltaLeft" is a value used to calculate the left endpoint of the interval.
-        "deltaRight" is a value used to calculate the right endpoint of the interval.
+        "deltaRight" likewise deltaLeft it's the value used to calculate the right endpoint of the interval.
 
         Output:
         It prints the current state of the game.
@@ -213,7 +213,7 @@ def askForQuantity(players, nr):
     The quantity that the player wants to add to the bottle. This is obtained 
     from user input and must be an integer.
     """
-    # While loop ensures the game will only continue if the user input is valid
+    # While loop ensure the game will only continue if the user input is valid
     while True:
 
         # Try and except blocks are used to ensure valid input, i.e. integers
@@ -328,7 +328,7 @@ def showInfoResult(bottle, maxL, players, nrRounds):
     print("FINAL SCORES:")
     print("{:<25} {:>20} {:>20}".format('NAME', 'SCORE', 'BONUS'))
     
-    # Print the players' names, scores (and bonuses for players who haven't lost)
+    # Print the players names, scores (and bonuses for players who haven't lost)
     for player in players:
         if player['playingStatus'] is False:
             print("{:<25} {:>20}".format(player['name'], 'Lost'))
