@@ -20,18 +20,27 @@ def askForExpertise():
     -------
     exp : integer
         The level of expertise chosen, between MAX_EXPERT and LESS_EXPERT
+
+    ValueError:
+    Raises an error if the value isn't within the range and asks to prompt again the input
+
     """
-    # Prompt user to enter value of the expertise they want
-    exp = int(input("Expert level - from 1 (radical) to 5 (beginner)? "))
+    while True:
+        # Prompt user to enter value of the expertise they want
+        exp = input("Expert level - from 1 (radical) to 5 (beginner)? ")
 
-    # Check if the user input is valid, and if it is not, re-adjust to valid values
-    if exp < MAX_EXPERT:
-        exp = MAX_EXPERT
-    if exp > LESS_EXPERT:
-        exp = LESS_EXPERT
+        try:
+            # Try to convert the user input to an integer
+            exp = int(exp)
 
-    # Return value
-    return exp
+            # Check if the user input is within the valid range
+            if exp in [1, 2, 3, 4, 5]:
+                return exp
+            else:
+                print("Please enter a value between 1 and 5.")
+        except ValueError:
+            # If conversion to int fails, handle the ValueError
+            print("Invalid input. Please enter a valid integer.")
 
 # *****************************************************
 def buildGameBottles(expertise):
@@ -124,8 +133,8 @@ def askForPlay():
     sourceBottle = None
     destinBottle = None
 
-    sourceBottle = input("Source Bottle? ")
-    destinationBottle = input("Destination bottle? ")
+    sourceBottle = input("Source Bottle? ").upper()
+    destinationBottle = input("Destination bottle? ").upper()
 
     # Assign the source and destination bottle
     for bottle in bottles:
@@ -206,7 +215,7 @@ def doMove(source, destin, bottles):
     sourceTopSymbol = sourceContents[sourceTop]
     destTopSymbol = destinContents[destinTop]
 
-    while topFromSymbol == topToSymbol and destinTop < source['capacity']:
+    while sourceTopSymbol == destTopSymbol and destinTop < source['capacity']:
         destinContents[destinTop] = sourceContents[sourceTop]
         sourceContents[sourceTop] = ' '
         destinTop -= 1
