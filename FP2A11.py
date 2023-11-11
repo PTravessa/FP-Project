@@ -180,31 +180,34 @@ def moveIsPossible(source, destin, bottles):
             destinContents = bottle['contents']
 
     # Print statements for debugging
-    print(f"Source contents: {sourceContents}") # Erase, I used it to check for erros in moving the symbols
-    print(f"Destination contents: {destinContents}") #Erase, I used it to check for erros in moving the symbols
+    #print(f"Source contents: {sourceContents}") # Erase, I used it to check for erros in moving the symbols
+    #print(f"Destination contents: {destinContents}") #Erase, I used it to check for erros in moving the symbols
 
     # Check if the name of the bottles are valid
     if sourceContents is None or destinContents is None:
         raise ValueError("Source or destination bottle not found.")
 
     # Check if the source bottle is not empty
-    if len(sourceContents) == 0:
+    if sourceContents == []:
         return False
 
     # Check if the destination bottle is not full
-    if len(destinContents) < CAPACITY:
+    if len(destinContents) == CAPACITY:
+        return False
+    
+    # Check if the destination bottle is not empty
+    if not destinContents:
         return True
-
-    # Check if the last symbol in the destination bottle is the same as the symbol in the source bottle
-    if destinContents[-1] == sourceContents[-1]:
-        return True
+    else:
+        if destinContents[-1] == sourceContents[-1]:
+            return True
 
     return False
 
 # *****************************************************
 def doMove(source, destin, bottles):
     """
-    Transfers as many symbols as possible from the source to the destination 
+    Transfers as many equal symbols as possible from the source to the destination 
     
     Parameters
     ----------
@@ -219,7 +222,7 @@ def doMove(source, destin, bottles):
     sourceContents = source['contents']
     destinContents = destin['contents']
 
-    while sourceContents and len(destinContents) < CAPACITY:
+    while sourceContents and len(destinContents) < CAPACITY and sourceContents != [] and (not destinContents or sourceContents[-1] == destinContents[-1]):
         destinContents.append(sourceContents.pop())
 
     # Ensure that the contents are updated in the original bottles list
@@ -232,7 +235,7 @@ def doMove(source, destin, bottles):
 # *****************************************************
 def full(aBottle):
     """
-    Checks if a bottle is filled with all equal symbols
+    Checks if a bottle is filled to the top with all equal symbols
     
     Parameters
     ----------
@@ -249,7 +252,11 @@ def full(aBottle):
 
     # Check if the bottle is empty
     if len(contents) == 0:
-        return True
+        return False
+    
+    # Check if the bottle is full
+    if len(contents) != CAPACITY:
+        return False
 
     # Store the first symbol to compare with the rest
     firstSymbol = contents[0]
@@ -264,7 +271,7 @@ def full(aBottle):
 
 
 # *****************************************************
-def allBottlesFull(fullBots, expertise):
+def allBottlesFull(fullBottles, expertise):
     """
     Checks if the user has filled all the necessary bottles to end the game
     
