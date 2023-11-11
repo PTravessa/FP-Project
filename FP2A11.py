@@ -115,7 +115,7 @@ def showBottles(bottles, nrErrors):
     print("NUMBER OF ERRORS: ", nrErrors)
 
 # *****************************************************
-def askForPlay():
+def askForPlay(bottles):
     """
     Asks the user for the letters that identify the source and destination bottles
     for the next "liquid" transfer, and returns those two letters
@@ -133,27 +133,28 @@ def askForPlay():
     sourceBottle = None
     destinBottle = None
 
-    sourceBottle = input("Source Bottle? ").upper()
-    destinationBottle = input("Destination bottle? ").upper()
+    sourceBottleName = input("Source Bottle? ").upper()
+    destinationBottleName = input("Destination bottle? ").upper()
 
     # Assign the source and destination bottle
     for bottle in bottles:
-        if bottle['name'] == sourceBottle:
+        if bottle['name'] == sourceBottleName:
             sourceBottle = bottle
-        elif bottle['name'] == destinationBottle:
+        elif bottle['name'] == destinationBottleName:
             destinBottle = bottle
 
     # Check if the name of the bottles are valid
     if sourceBottle is None or destinBottle is None:
-         raise ValueError("Source or destination bottle not found.")
+        raise ValueError("Source or destination bottle not found.")
 
-    return sourceBottle, destinationBottle
+    return sourceBottle, destinBottle
+
 
 # *****************************************************
 def moveIsPossible(source, destin, bottles):
     """
     Checks if the move from the source bottle to the destination bottle is possible
-    
+
     Parameters
     ----------
     source : str
@@ -166,24 +167,33 @@ def moveIsPossible(source, destin, bottles):
     Returns
     -------
     boolean
-        True if it is possible to transfer from the source bottle to the destination bottle, False otherwise     
+        True if it is possible to transfer from the source bottle to the destination bottle, False otherwise
     """
     sourceContents = None
     destinContents = None
 
+    # Assign the source and destination bottle
     for bottle in bottles:
         if bottle['name'] == source:
             sourceContents = bottle['contents']
         elif bottle['name'] == destin:
             destinContents = bottle['contents']
 
+    # Print statements for debugging
+    print(f"Source contents: {sourceContents}") # Erase, I used it to check for erros in moving the symbols
+    print(f"Destination contents: {destinContents}") #Erase, I used it to check for erros in moving the symbols
+
+    # Check if the name of the bottles are valid
+    if sourceContents is None or destinContents is None:
+        raise ValueError("Source or destination bottle not found.")
+
     # Check if the source bottle is not empty
-    if len(sourceContents) == 0 or sourceContents == None:
+    if len(sourceContents) == 0:
         return False
 
     # Check if the destination bottle is not full
-    if len(destinContents) != CAPACITY or destinContents == None:
-        return False
+    if len(destinContents) < CAPACITY:
+        return True
 
     # Check if the last symbol in the destination bottle is the same as the symbol in the source bottle
     if destinContents[-1] == sourceContents[-1]:
@@ -209,24 +219,16 @@ def doMove(source, destin, bottles):
     sourceContents = source['contents']
     destinContents = destin['contents']
 
-    sourceTop = len(sourceContents) - 1
-    destinTop = len(destinContents) - 1
+    while sourceContents and len(destinContents) < CAPACITY:
+        destinContents.append(sourceContents.pop())
 
-    sourceTopSymbol = sourceContents[sourceTop]
-    destTopSymbol = destinContents[destinTop]
+    # Ensure that the contents are updated in the original bottles list
+    for bottle in bottles:
+        if bottle['name'] == source['name']:
+            bottle['contents'] = sourceContents
+        elif bottle['name'] == destin['name']:
+            bottle['contents'] = destinContents
 
-    while sourceTopSymbol == destTopSymbol and destinTop < source['capacity']:
-        destinContents[destinTop] = sourceContents[sourceTop]
-        sourceContents[sourceTop] = ' '
-        destinTop -= 1
-        sourceTop -= 1
-
-        if sourceTop < 0:
-            break
-
-        sourceTopSymbol = sourceContents[sourceTop]
-        destTopSymbol = destinContents[destinTop]
-   
 # *****************************************************
 def full(aBottle):
     """
@@ -304,11 +306,11 @@ endGame = False
 showBottles(bottles, nrErrors)
 # Let's play the game
 while not endGame:
-    source, destin = askForPlay()
-    if moveIsPossible(source, destin, bottles):
-        doMove(source, destin,bottles)
+    source, destin = askForPlay(bottles)
+    if moveIsPossible(source['name'], destin['name'], bottles):
+        doMove(source, destin, bottles)
         showBottles(bottles, nrErrors)
-        if full(bottles[destin]):
+        if full(destin):
             fullBottles += 1
             keepGo = input("Bottle filled!!! Congrats!! Keep playing? (Y/N)")
             if keepGo == "N":
