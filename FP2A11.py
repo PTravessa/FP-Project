@@ -63,13 +63,16 @@ def buildGameBottles(expertise):
     N = NR_BOTTLES-expertise
 
     # Create a variable that represents the amount of symbols that have to be distributed throughout all the bottles
-    numberSymbols = N * 8
+    numberSymbols = N * CAPACITY
 
     # Number of symbols per bottle
-    symbolsInBottle = int(numberSymbols/NR_BOTTLES)
+    symbolsInBottle = round(numberSymbols/NR_BOTTLES)
+    #print(8 * N)
+    #print(8 * (10-N))
+    #print(symbolsInBottle)
 
     # Create an empty list of symbols to be distributed
-    symbolList = [symbol for symbol in SYMBOLS[:N] for _ in range(8)]
+    symbolList = [symbol for symbol in SYMBOLS[:N] for _ in range(CAPACITY)]
     random.shuffle(symbolList)
 
     # Create the list of arrays
