@@ -66,10 +66,12 @@ def buildGameBottles(expertise):
     numberSymbols = N * CAPACITY
 
     # Number of symbols per bottle
-    symbolsInBottle = round(numberSymbols/NR_BOTTLES)
+    symbolsInBottle = numberSymbols//NR_BOTTLES
+    restSymbols = (numberSymbols%NR_BOTTLES)
     #print(8 * N)
     #print(8 * (10-N))
     #print(symbolsInBottle)
+    #print(restSymbols)
 
     # Create an empty list of symbols to be distributed
     symbolList = [symbol for symbol in SYMBOLS[:N] for _ in range(CAPACITY)]
@@ -81,6 +83,10 @@ def buildGameBottles(expertise):
         bottle_name = LETTERS[i]
         bottle_symbols = symbolList[i * symbolsInBottle : (i + 1) * symbolsInBottle]
         bottles.append({"name": bottle_name, "capacity": CAPACITY, "contents": bottle_symbols})
+        if restSymbols > 0:
+            bottles[i]["contents"].append(symbolList[-restSymbols])
+            restSymbols -= 1
+
 
     # Return the list containing information about the bottles
     return bottles
@@ -127,28 +133,26 @@ def askForPlay(bottles):
     -------
     tuple
         A tuple containing the source and destination letters entered by the user.
-
-    Raises
-    -------
-    ValueError if the user input was not valid
     """
     # Initialize the bottles with no value
     sourceBottle = None
     destinBottle = None
 
-    sourceBottleName = input("Source Bottle? ").upper()
-    destinationBottleName = input("Destination bottle? ").upper()
+    while sourceBottle is None or destinBottle is None:
 
-    # Assign the source and destination bottle
-    for bottle in bottles:
-        if bottle['name'] == sourceBottleName:
-            sourceBottle = bottle
-        elif bottle['name'] == destinationBottleName:
-            destinBottle = bottle
+        sourceBottleName = input("Source Bottle? ").upper()
+        destinationBottleName = input("Destination bottle? ").upper()
 
-    # Check if the name of the bottles are valid
-    if sourceBottle is None or destinBottle is None:
-        raise ValueError("Source or destination bottle not found.")
+        # Assign the source and destination bottle
+        for bottle in bottles:
+            if bottle['name'] == sourceBottleName:
+                sourceBottle = bottle
+            elif bottle['name'] == destinationBottleName:
+                destinBottle = bottle
+
+        # Check if the name of the bottles are valid
+        if sourceBottle is None or destinBottle is None:
+            print("Source or destination bottle not found.")
 
     return sourceBottle, destinBottle
 
