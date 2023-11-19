@@ -4,6 +4,9 @@
 FUNDAMENTOS DE PROGRAMAÇÃO - PROJETO 2
 
 @author: Duarte Gonçalves (nº 56095) e Pedro Travessa (nº 59479) - GRUPO 11
+
+Observation: We made a few changes to the main program to ensure the game
+ends as intended (the changes are commented)
 """
 import random
 
@@ -21,32 +24,36 @@ def askForExpertise():
     exp : integer
         The level of expertise chosen, between MAX_EXPERT and LESS_EXPERT
 
+    Raises
+    -------
     ValueError:
-    Raises an error if the value isn't within the range and asks to prompt again the input
+        If the user input isn't a valid integer
 
     """
     while True:
+
         # Prompt user to enter value of the expertise they want
         exp = input("Expert level - from 1 (radical) to 5 (beginner)? ")
 
         try:
-            # Try to convert the user input to an integer
+            # Convert user input to integer
             exp = int(exp)
 
-            # Check if the user input is within the valid range
+            # Check if user input is valid
             if exp in [1, 2, 3, 4, 5]:
                 return exp
             else:
-                print("Please enter a value between 1 and 5.")
+                print("Please enter a value between", MAX_EXPERT, "and", LESS_EXPERT,".")
+
+        # If user input is not valid
         except ValueError:
-            # If conversion to int fails, handle the ValueError
             print("Invalid input. Please enter a valid integer.")
 
 # *****************************************************
 def buildGameBottles(expertise):
     """
     Builds and returns a list of dictionaries containing all the information
-    regarding the game bottles (name, capacity and "liquid")
+    regarding the game bottles (name, capacity and contents)
 
     Parameters:
     -------
@@ -58,26 +65,23 @@ def buildGameBottles(expertise):
     list
         A list of dictionaries containing the information regarding the game bottles
     """
-
-    # Create a variable that represents the number of bottles that have to be full by the end of the game
+    # Number of bottles that have to be full for the end of the game
     N = NR_BOTTLES-expertise
 
-    # Create a variable that represents the amount of symbols that have to be distributed throughout all the bottles
+    # Number of symbols that have to be distributed throughout all the bottles
     numberSymbols = N * CAPACITY
 
     # Number of symbols per bottle
     symbolsInBottle = numberSymbols//NR_BOTTLES
-    restSymbols = (numberSymbols%NR_BOTTLES)
-    #print(8 * N)
-    #print(8 * (10-N))
-    #print(symbolsInBottle)
-    #print(restSymbols)
 
-    # Create an empty list of symbols to be distributed
+    # Number of remaining symbols to be distributed
+    restSymbols = (numberSymbols%NR_BOTTLES)
+
+    # Create a list of the symbols to be distributed
     symbolList = [symbol for symbol in SYMBOLS[:N] for _ in range(CAPACITY)]
     random.shuffle(symbolList)
 
-    # Create the list of arrays
+    # Create the list containing the information about the bottles
     bottles = []
     for i in range(NR_BOTTLES):
         bottle_name = LETTERS[i]
@@ -87,8 +91,6 @@ def buildGameBottles(expertise):
             bottles[i]["contents"].append(symbolList[-restSymbols])
             restSymbols -= 1
 
-
-    # Return the list containing information about the bottles
     return bottles
 
 # *****************************************************
@@ -101,8 +103,7 @@ def showBottles(bottles, nrErrors):
     bottles : list
         A list of dictionaries which contains the information regarding the game bottles
     nrErrors : integer
-        The number of errors the user has already commited
-
+        The number of errors the user has already committed
     """
     # Print name row
     names = " "
@@ -140,22 +141,21 @@ def askForPlay(bottles):
 
     while sourceBottle is None or destinBottle is None:
 
+        # Assign the source and destination bottles
         sourceBottleName = input("Source Bottle? ").upper()
         destinationBottleName = input("Destination bottle? ").upper()
 
-        # Assign the source and destination bottle
         for bottle in bottles:
             if bottle['name'] == sourceBottleName:
                 sourceBottle = bottle
             elif bottle['name'] == destinationBottleName:
                 destinBottle = bottle
 
-        # Check if the name of the bottles are valid
+        # Check if the names of the bottles are valid
         if sourceBottle is None or destinBottle is None:
             print("Source or destination bottle not found.")
 
     return sourceBottle, destinBottle
-
 
 # *****************************************************
 def moveIsPossible(source, destin, bottles):
@@ -175,7 +175,13 @@ def moveIsPossible(source, destin, bottles):
     -------
     boolean
         True if it is possible to transfer from the source bottle to the destination bottle, False otherwise
+
+    Raises
+    -------
+    ValueError
+        If the names the user entered for the source or destination bottles are not valid
     """
+    # Initialize the bottles with no value
     sourceContents = None
     destinContents = None
 
@@ -185,10 +191,6 @@ def moveIsPossible(source, destin, bottles):
             sourceContents = bottle['contents']
         elif bottle['name'] == destin:
             destinContents = bottle['contents']
-
-    # Print statements for debugging
-    #print(f"Source contents: {sourceContents}") # Erase, I used it to check for erros in moving the symbols
-    #print(f"Destination contents: {destinContents}") #Erase, I used it to check for erros in moving the symbols
 
     # Check if the name of the bottles are valid
     if sourceContents is None or destinContents is None:
@@ -202,7 +204,7 @@ def moveIsPossible(source, destin, bottles):
     if len(destinContents) == CAPACITY:
         return False
     
-    # Check if the destination bottle is not empty
+    # Check if the destination bottle is empty or if top symbols are equal
     if not destinContents:
         return True
     else:
@@ -218,21 +220,22 @@ def doMove(source, destin, bottles):
     
     Parameters
     ----------
-    source : char
+    source : str
         The name of the source bottle
-    destin : char
+    destin : str
         The name of the destination bottle
     bottles : list
         A list of dictionaries containing the information about the game bottles
     """
-
+    # Get contents of the bottle
     sourceContents = source['contents']
     destinContents = destin['contents']
 
+    # Transfer the liquid from source bottle to destination bottle
     while sourceContents and len(destinContents) < CAPACITY and sourceContents != [] and (not destinContents or sourceContents[-1] == destinContents[-1]):
         destinContents.append(sourceContents.pop())
 
-    # Ensure that the contents are updated in the original bottles list
+    # Ensure that the bottle contents are updated
     for bottle in bottles:
         if bottle['name'] == source['name']:
             bottle['contents'] = sourceContents
@@ -276,7 +279,6 @@ def full(aBottle):
     # All symbols are equal
     return True
 
-
 # *****************************************************
 def allBottlesFull(fullBottles, expertise):
     """
@@ -292,10 +294,9 @@ def allBottlesFull(fullBottles, expertise):
     Returns
     -------
     boolean
-        True if all the bottles are full, False otherwise
+        True if all the bottles necessary to win the game are full, False otherwise
     """
-
-    # Calculate number of bottles that have to be full for the end of the game
+    # Number of bottles that have to be full for the end of the game
     bottlesEnd = NR_BOTTLES-expertise
 
     if bottlesEnd == fullBottles:
@@ -317,6 +318,7 @@ bottles = buildGameBottles(expertise)
 nrErrors = 0
 fullBottles = 0 
 endGame = False
+ending = 0 # Added to ensure game ends as intended
 showBottles(bottles, nrErrors)
 # Let's play the game
 while not endGame:
@@ -327,12 +329,13 @@ while not endGame:
         if full(destin):
             fullBottles += 1
             keepGo = input("Bottle filled!!! Congrats!! Keep playing? (Y/N)")
-            if keepGo == "N":
+            if keepGo.upper() == "N": # Altered to ensure game ends as intended
                 endGame = True
+                ending = 1 # Added to ensure game ends as intended
     else:
         print("Error!")
-        nrErrors += 1
-    endGame = allBottlesFull(fullBottles, expertise) or nrErrors == 3
+        nrErrors += 1  
+    endGame = allBottlesFull(fullBottles, expertise) or nrErrors == 3 or ending ==1 # Altered to ensure game ends as intended
 
 print("Full bottles =", fullBottles, "  Errors =", nrErrors)
 if nrErrors >= 3:
