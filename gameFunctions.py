@@ -306,9 +306,96 @@ def askUserFor(ask, options, end = ""):
 # ***************** NEW FUNCTIONS HERE ****************
 # *****************************************************
   
+def newGameInfo(fileName):
+    """
+    Opens and reads the information in the fileName file, which contains valid
+    information about the game in the following order: level of maximum expertise,
+    level of minimum expertise, total number of bottles, letters and symbols that will be
+    used to fill the bottles
+
+    Parameters
+    ----------
+    fileName : str
+        The name of the file containing information regarding the game
+
+    Returns
+    -------
+
+    Requires
+    --------
+        The file fileName must exist and it must contain the valid information
+        necessary to play the game
+
+    Raises
+    ------
+
+    """
+    try:
+        with open (f'{fileName}.txt', 'r') as file:
+            data = file.read()
+            dataLines = data.split('\n')
+
+            # Level of expertise
+            MAX_EXPERT = int(dataLines[0])
+            LESS_EXPERT = int(dataLines[1])
+            expertise = randint(MAX_EXPERT,LESS_EXPERT)
+
+            # Number of bottles that have to full by the end of the game
+            totalNumberOfBottles = int(dataLines[2])
+            fullBottlesByEnd = totalNumberOfBottles - expertise
+
+            # Bottle size
+            bottleSize = int(dataLines[3])
+
+            # Letters and symbols
+            letters = str(dataLines[4])
+            symbols = str(dataLines[5])
+
+            # Dictionary containing bottle information
+            bottleInfo = buildGameBottles(totalNumberOfBottles,bottleSize,expertise,letters,symbols)
+
+            #allGameInfo = {'Expertise':expertise,'FullBottlesByEnd':fullBottlesByEnd,'BottleInfo':bottleInfo}
+
+            return expertise,fullBottlesByEnd,bottleInfo
+
+    except FileNotFoundError:
+        raise Exception(f"The file '{fileName}' does not exist. Please try again with a valid file!")
+    except ValueError:
+        raise Exception(f"The file '{fileName}' does not contain valid information about the game! Please try again with a different file!")
+
     
-    
-    
-    
-    
-    
+# *****************************************************
+def oldGameInfo(fileName):
+    """
+    Description
+
+    Parameters
+    ----------
+    fileName : string
+        The name of the file.
+
+    Returns
+    -------
+
+
+    """
+
+
+
+
+
+
+# *****************************************************
+#def writeGameInfo(fileName,????):
+    """
+    Description
+
+    Parameters
+    ----------
+    fileName : string
+        The name of the file.
+
+    Returns
+    -------
+
+    """
