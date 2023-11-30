@@ -305,13 +305,12 @@ def askUserFor(ask, options, end = ""):
 # *****************************************************
 # ***************** NEW FUNCTIONS HERE ****************
 # *****************************************************
-
-
+  
 def newGameInfo(fileName):
     """
     Opens and reads the information in the fileName file, which contains valid
     information about the game in the following order: level of maximum expertise,
-    level of minimum expertise, total number of bottles, letters, and symbols that will be
+    level of minimum expertise, total number of bottles, letters and symbols that will be
     used to fill the bottles
 
     Parameters
@@ -321,8 +320,6 @@ def newGameInfo(fileName):
 
     Returns
     -------
-    tuple
-        A tuple containing expertise, fullBottlesByEnd, and bottleInfo
 
     Requires
     --------
@@ -331,143 +328,105 @@ def newGameInfo(fileName):
 
     Raises
     ------
-    Exception
-        If the file is not found or if it does not contain valid information about the game
 
     """
     try:
-        with open(f'{fileName}.txt', 'r') as file:
-            dataLines = file.read().split('\n')
+        with open (fileName, 'r') as file:
+            data = file.read().split('\n')
 
             # Level of expertise
-            MAX_EXPERT = int(dataLines[0])
-            LESS_EXPERT = int(dataLines[1])
-            expertise = randint(MAX_EXPERT, LESS_EXPERT)
+            MAX_EXPERT = int(data[0])
+            LESS_EXPERT = int(data[1])
+            expertise = randint(MAX_EXPERT,LESS_EXPERT+1)
 
-            # Number of bottles that have to be full by the end of the game
-            totalNumberOfBottles = int(dataLines[2])
-            fullBottlesByEnd = totalNumberOfBottles - expertise
+            # Number of bottles that have to full by the end of the game
+            totalNumberOfBottles = int(data[2])
+            #fullBottlesByEnd = totalNumberOfBottles - expertise
 
             # Bottle size
-            bottleSize = int(dataLines[3])
+            bottleSize = int(data[3])
 
             # Letters and symbols
-            letters = dataLines[4]  # Assuming the 5th line contains letters
-            symbols = dataLines[5]  # Assuming the 6th line contains symbols
+            letters = str(data[4])
+            symbols = str(data[5])
 
             # Dictionary containing bottle information
-            bottleInfo = buildGameBottles(totalNumberOfBottles, bottleSize, expertise, letters, symbols)
+            bottleInfo = buildGameBottles(totalNumberOfBottles,bottleSize,expertise,letters,symbols)
 
-            return expertise, fullBottlesByEnd, bottleInfo
+            # New games start with 0 bottles full and 0 errors
+            fullBottles = 0
+            errors = 0
+
+        return expertise,totalNumberOfBottles, fullBottles, bottleSize, bottleInfo, errors
 
     except FileNotFoundError:
-        print(f"The file '{fileName}.txt' does not exist. Creating a new file with initial game information.")
+        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again with a valid file!")
+    except IOError:
+        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please try again with a different file!")
 
-        # Initialize initial game information (modify this part according to your game logic)
-        MAX_EXPERT = 1
-        LESS_EXPERT = 5
-        expertise = randint(MAX_EXPERT, LESS_EXPERT)
-        totalNumberOfBottles = 10
-        fullBottlesByEnd = totalNumberOfBottles - expertise
-        bottleSize = 8
-        letters = "ABCDEFGHIJ"
-        symbols = "@#%$!+o?§"
+#print(newGameInfo('new.txt'))
 
-        # Create a new file and write the initial game information
-        with open(f'{fileName}.txt', 'w') as new_file:
-            new_file.write(f"{MAX_EXPERT}\n{LESS_EXPERT}\n{totalNumberOfBottles}\n{bottleSize}\n{letters}\n{symbols}")
-
-        # Return the initial game information
-        return expertise, fullBottlesByEnd, buildGameBottles(totalNumberOfBottles, bottleSize, expertise, letters, symbols)
-
-    except ValueError:
-        raise Exception(f"The file '{fileName}.txt' does not contain valid information about the game! Please try again with a different file!")
 
 # *****************************************************
 def oldGameInfo(fileName):
     """
-    Reads information about an old game from a file and returns the necessary values.
+    Description
 
     Parameters
     ----------
-    fileName : str
-        The name of the file containing the game information.
+    fileName : string
+        The name of the file.
 
     Returns
     -------
-    tuple
-        A tuple containing the necessary values for an old game.
-
-    Raises
-    ------
-    FileNotFoundError
-        If the file is not found.
-    ValueError
-        If the file contents are not as expected.
-
     """
     try:
         with open(fileName, 'r') as file:
-            # Read expertise level from the file
-            expertise = int(file.readline().strip())
+            data = file.read().split('\n')
 
-            # Read the number of full bottles from the file
-            fullBottles = int(file.readline().strip())
+            expertise = int(data[0])
 
-            # Read the number of errors from the file
-            nrErrors = int(file.readline().strip())
+            totalNumberOfBottles = int(data[1])
 
-            # Read the contents of each bottle from the file
-            bottles = {}
-            for letter in letters[:expertise]:
-                contents = file.readline().strip()
-                bottles[letter] = list(contents)
+            fullBottles = int(data[2])
 
-            # Return the necessary values for an old game
-            return bottles, botSize, nrErrors, expertise, fullBottles
+            bottleSize = int(data[3])
+
+            bottleInfo_str = data[4].replace("'", "\"")
+            print(bottleInfo_str)
+            bottleInfo = eval(bottleInfo_str)
+
+            errors = int(data[5])   
+          
+        return expertise,totalNumberOfBottles, fullBottles, bottleSize, bottleInfo, errors
+ 
     except FileNotFoundError:
-        raise FileNotFoundError(f"File {fileName} not found.")
-    except ValueError:
-        raise ValueError(f"Unexpected content in file {fileName}.")
+        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again with a valid file!")
+    except IOError:
+        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please try again with a different file!")
 
 
-def writeGameInfo(fileName, bottles, botSize, nrErrors, expertise, fullBottles):
+
+
+# *****************************************************
+def writeGameInfo(fileName,expertise,totalNumberOfBottles,fullBottles,bottleSize,bottleInfo,errors):
     """
-    Writes information about the game to a file for future playing.
+    Description
 
     Parameters
     ----------
-    fileName : str
-        The name of the file to store the game information.
-    bottles : dict
-        A dictionary representing the game bottles.
-    botSize : int
-        The capacity of bottles.
-    nrErrors : int
-        The number of errors made in the game.
-    expertise : int
-        The level of user expertise.
-    fullBottles : int
-        The number of bottles that are already full.
+    fileName : string
+        The name of the file.
 
     Returns
     -------
-    None
 
     """
-    try:
-        with open(fileName, 'w') as file:
-            # Write expertise level to the file
-            file.write(str(expertise) + '\n')
-
-            # Write the number of full bottles to the file
-            file.write(str(fullBottles) + '\n')
-
-            # Write the number of errors to the file
-            file.write(str(nrErrors) + '\n')
-
-            # Write the contents of each bottle to the file
-            for letter in LETTERS[:expertise]:
-                file.write(''.join(bottles[letter]) + '\n')
-    except Exception as e:
-        print(f"An error occurred while writing to {fileName}: {e}")
+    with open(fileName,'w') as file:
+        file.write(str(expertise) + '\n')
+        file.write(str(totalNumberOfBottles) + '\n')
+        file.write(str(fullBottles) + '\n')
+        file.write(str(bottleSize) + '\n')
+        file.write(str(bottleInfo) + '\n')
+        file.write(str(errors) + '\n')
+    file.close()
