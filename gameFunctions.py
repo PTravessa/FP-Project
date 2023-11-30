@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on:
+Fundamentos de Programação - Project 3
 
-@author:
+Created on: December of 2023
+
+@author: Duarte Gonçalves (nº 56095) e Pedro Travessa (nº 59479) - Group 11
 """
 
 from random import randint
@@ -308,27 +310,48 @@ def askUserFor(ask, options, end = ""):
   
 def newGameInfo(fileName):
     """
-    Opens and reads the information in the fileName file, which contains valid
-    information about the game in the following order: level of maximum expertise,
-    level of minimum expertise, total number of bottles, letters and symbols that will be
-    used to fill the bottles
+    Opens and reads the information in the file containing the necessary
+    to initialize a new game.
 
     Parameters
     ----------
     fileName : str
-        The name of the file containing information regarding the game
-
-    Returns
-    -------
+        The name of the file containing information regarding the game.
 
     Requires
     --------
-        The file fileName must exist and it must contain the valid information
-        necessary to play the game
+    The file fileName must exist and it must contain the necessary information
+    in the following order:
+        -> Line 1 - level of maximum expertise (int)
+        -> Line 2 - level of minimum expertise (int)
+        -> Line 3 - total number of bottles (int)
+        -> Line 4 - capacity of the bottles (int)
+        -> Line 5 - letters used to name the bottles (string)
+        -> Line 6 - symbols used to fill the bottles (string)
+
+    Returns
+    -------
+    expertise : int
+        The level of expertise generated for the game (between MAX_EXPERT AND LESS_EXPERT)
+    totalNumberOfBottles : int
+        The number of bottles in the game
+    fullBottles : int
+        The number of full bottles in the game. Each game starts with 0 full bottles.
+    bottleSize : int
+        The capacity of each bottle
+    bottleInfo : dict
+        Dictionary containing information about the game bottles created
+        with the game information, as per documented in the buildGameBottles function.
+    errors : int
+        The number of errors in the game. Each game starts with 0 errors.
 
     Raises
     ------
-
+    FileNotFoundError:
+        If the file 'fileName' does not exist.
+    IOError:
+        If the file 'fileName' does not contain the valid information,
+        such as missing information or incorrect order.
     """
     try:
         with open (fileName, 'r') as file:
@@ -339,11 +362,8 @@ def newGameInfo(fileName):
             LESS_EXPERT = int(data[1])
             expertise = randint(MAX_EXPERT,LESS_EXPERT+1)
 
-            # Number of bottles that have to full by the end of the game
+            # Number of bottles and their size
             totalNumberOfBottles = int(data[2])
-            #fullBottlesByEnd = totalNumberOfBottles - expertise
-
-            # Bottle size
             bottleSize = int(data[3])
 
             # Letters and symbols
@@ -360,66 +380,102 @@ def newGameInfo(fileName):
         return expertise,totalNumberOfBottles, fullBottles, bottleSize, bottleInfo, errors
 
     except FileNotFoundError:
-        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again with a valid file!")
+        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again!")
     except IOError:
-        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please try again with a different file!")
-
-#print(newGameInfo('new.txt'))
-
+        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please use a file containing the necessary information in the correct order.")
 
 # *****************************************************
 def oldGameInfo(fileName):
     """
-    Description
+    Opens and reads the information in the fileName file containing information
+    about a "old" game in order to initialize that game
 
     Parameters
     ----------
     fileName : string
-        The name of the file.
+        The name of the file containing information regarding the "old" game.
+
+    Requires
+    --------
+    The file fileName must exist and it must contain the necessary information
+    in the following order:
+        -> Line 1 - level of expertise (int)
+        -> Line 2 - total number of bottles (int)
+        -> Line 3 - number of full bottles (int)
+        -> Line 4 - capacity of the bottles (int)
+        -> Line 5 - dictionary containing bottle information (string)
+        -> Line 6 - number of errors (int)
 
     Returns
     -------
+    expertise : int
+        The level of expertise of the game.
+    totalNumberOfBottles : int
+        The number of bottles in the game.
+    fullBottles : int
+        The number of full bottles in the game.
+    bottleSize : int
+        The capacity of each bottle.
+    bottleInfo : dict
+        Dictionary containing information about the game bottles created
+        with the game information, as per documented in the buildGameBottles function.
+    errors : int
+        The number of errors in the game.
+
+    Raises
+    ------
+    FileNotFoundError:
+        If the file 'fileName' does not exist.
+    IOError:
+        If the file 'fileName' does not contain the valid information,
+        such as missing information or incorrect order.
     """
     try:
         with open(fileName, 'r') as file:
             data = file.read().split('\n')
 
             expertise = int(data[0])
-
             totalNumberOfBottles = int(data[1])
-
             fullBottles = int(data[2])
-
             bottleSize = int(data[3])
 
-            bottleInfo_str = data[4].replace("'", "\"")
-            print(bottleInfo_str)
-            bottleInfo = eval(bottleInfo_str)
+            bottleInfoString = data[4].replace("'", "\"")
+            bottleInfo = eval(bottleInfoString)
 
             errors = int(data[5])   
           
         return expertise,totalNumberOfBottles, fullBottles, bottleSize, bottleInfo, errors
  
     except FileNotFoundError:
-        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again with a valid file!")
+        raise FileNotFoundError(f"The file '{fileName}' does not exist. Please try again!")
     except IOError:
-        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please try again with a different file!")
-
-
-
+        raise IOError(f"The file '{fileName}' does not contain valid information about the game! Please use a file containing the necessary information in the correct order.")
 
 # *****************************************************
 def writeGameInfo(fileName,expertise,totalNumberOfBottles,fullBottles,bottleSize,bottleInfo,errors):
     """
-    Description
+    Creates a file 'fileName' with the information regarding a game.
 
     Parameters
     ----------
     fileName : string
         The name of the file.
+    expertise : int
+        The level of expertise.
+    totalNumberOfBottles : int
+        The number of bottles.
+    fullBottles : int
+        The number of full bottles.
+    bottleSize : int
+        The capacity of each bottle.
+    bottleInfo : str
+        Dictionary with the information regarding the bottles.
+    errors : int
+        The number of errors.
 
     Returns
     -------
+    None.
 
     """
     with open(fileName,'w') as file:
@@ -429,4 +485,3 @@ def writeGameInfo(fileName,expertise,totalNumberOfBottles,fullBottles,bottleSize
         file.write(str(bottleSize) + '\n')
         file.write(str(bottleInfo) + '\n')
         file.write(str(errors) + '\n')
-    file.close()

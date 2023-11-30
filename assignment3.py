@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Fundamentos de Programação - Project 3
 
-@author: 
+Created on: December of 2023
+
+@author: Duarte Gonçalves (nº 56095) e Pedro Travessa (nº 59479) - Group 11
 """
 
 import gameFunctions as funcs
@@ -19,7 +22,6 @@ else:
     infoGame = funcs.oldGameInfo(fileName)
 
 expertise, nrBotts, fullBottles, botSize, bottles, nrErrors = infoGame
-print(infoGame)
 
 endGame = False
 funcs.showBottles(bottles, botSize, nrErrors)
